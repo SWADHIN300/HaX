@@ -19,7 +19,7 @@ function sourceLabel(source: SourceFilter) {
   return source === 'All' ? 'All Indian sources' : source;
 }
 
-export default function FilterBar({
+export default function FilterBar({ 
   domain,
   onDomainChange,
   indianSource,
