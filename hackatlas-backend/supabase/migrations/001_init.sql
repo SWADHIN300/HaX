@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS hackathons (
   country       TEXT,
   prize_pool    NUMERIC,                       -- normalized to INR
   prize_pool_raw TEXT,                         -- original string, e.g. "$50,000"
-  domain_tags   TEXT[] NOT NULL DEFAULT '{}',  -- AI, Web3, Fintech, General, etc.
+  domain_tags   TEXT[] NOT NULL DEFAULT '{}',  -- Web3, AI, Fintech, General, etc.
   description   TEXT NOT NULL DEFAULT '',      -- truncated to 300 chars
   banner_image_url TEXT,
   first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

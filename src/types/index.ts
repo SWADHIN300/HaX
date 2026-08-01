@@ -34,7 +34,7 @@ export type HackathonSource =
   | 'Hack2Skill'
   | 'SIH';
 
-export type Domain = 'AI' | 'Web3' | 'Fintech' | 'Student' | 'General';
+export type Domain = 'Web3' | 'AI'  | 'Fintech' | 'Student' | 'General';
 
 export interface Alert {
   id: string;

@@ -8,7 +8,7 @@ interface AlertFormProps {
   onCancel: () => void;
 }
 
-const allDomains: Domain[] = ['AI', 'Web3', 'Fintech', 'Student', 'General'];
+const allDomains: Domain[] = ['Web3', 'AI' , 'Fintech', 'Student', 'General'];
 const countries = [
   'United States',
   'India',

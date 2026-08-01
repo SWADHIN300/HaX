@@ -11,7 +11,7 @@ interface FilterBarProps {
   onSearchChange: (s: string) => void;
 }
 
-const domains: DomainFilter[] = ['India', 'All', 'AI', 'Web3', 'Fintech', 'Student', 'General'];
+const domains: DomainFilter[] = ['India', 'All', 'Web3', 'AI', 'Fintech', 'Student', 'General'];
 const indianSources: SourceFilter[] = ['All', 'Unstop', 'Devfolio', 'HackerEarth', 'Reskilll', 'Hack2Skill', 'SIH'];
 const globalSources: SourceFilter[] = ['All', 'Devpost', 'MLH', 'ETHGlobal', 'Colosseum', 'DoraHacks'];
 
