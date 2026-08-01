@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Alert, AlertFormData } from '../types';
 import ToggleSwitch from '../components/ui/ToggleSwitch';
 import Modal from '../components/ui/Modal';
@@ -25,11 +25,11 @@ export default function AlertsScreen({
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
   // Simple responsive check
-  useState(() => {
+  useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
-  });
+  }, []);
 
   const handleSave = (data: AlertFormData) => {
     if (editingAlert) {

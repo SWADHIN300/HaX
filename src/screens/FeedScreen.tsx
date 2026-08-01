@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { Hackathon, DomainFilter, SourceFilter } from '../types';
 import FilterBar from '../components/ui/FilterBar';
 import HackathonCard from '../components/ui/HackathonCard';
@@ -48,6 +48,29 @@ export default function FeedScreen({
     setSelectedHackathon(h);
   }, []);
 
+  const [theme, setTheme] = useState(() => localStorage.getItem('hax-theme') || 'dark');
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const current = document.documentElement.getAttribute('data-color-theme') === 'light' ? 'light' : 'dark';
+      setTheme(current);
+    };
+    checkTheme();
+    window.addEventListener('storage', checkTheme);
+    return () => window.removeEventListener('storage', checkTheme);
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    localStorage.setItem('hax-theme', nextTheme);
+    if (nextTheme === 'light') {
+      document.documentElement.setAttribute('data-color-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-color-theme');
+    }
+  }, [theme]);
+
   return (
     <>
       <div
@@ -70,13 +93,41 @@ export default function FeedScreen({
           </div>
         )}
 
-        <div className="hidden desktop:block px-6 pt-6 pb-2">
-          <h1 className="text-2xl font-bold tracking-tighter text-text-primary">
-            Discover Hackathons
-          </h1>
-          <p className="text-sm text-text-secondary mt-1">
-            {loading ? 'Loading...' : `${hackathons.length} hackathons found`}
-          </p>
+        <div className="px-4 desktop:px-6 pt-4 desktop:pt-6 pb-2 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl desktop:text-2xl font-bold tracking-tighter text-text-primary">
+              Discover Hackathons
+            </h1>
+            <p className="text-xs desktop:text-sm text-text-secondary mt-0.5 desktop:mt-1">
+              {loading ? 'Loading...' : `${hackathons.length} hackathons found`}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="flex items-center justify-center w-9 h-9 rounded-lg border border-base-border bg-base-card hover:border-accent-amber/50 hover:bg-base/30 transition-colors text-text-secondary hover:text-text-primary cursor-pointer"
+            aria-label="Toggle theme"
+            title="Toggle theme"
+          >
+            {theme === 'light' ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-accent-amber" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-amber" aria-hidden="true">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            )}
+          </button>
         </div>
 
         <FilterBar

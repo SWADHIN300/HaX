@@ -1,0 +1,48 @@
+name: Daily Hackathon Scrape
+
+on:
+  schedule:
+    # 8:00 AM IST = 2:30 UTC
+    - cron: "30 2 * * *"
+  workflow_dispatch: # allow manual runs
+
+env:
+  NODE_ENV: production
+
+jobs:
+  scrape:
+    name: Run HackAtlas Pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run pipeline
+        id: pipeline
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: npx tsx src/runPipeline.ts 2>&1 | tee pipeline-output.log
+
+      - name: Upload pipeline log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-failure-log
+          path: pipeline-output.log
+          retention-days: 7
