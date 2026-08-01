@@ -9,7 +9,7 @@ export default function BottomTabBar() {
   ];
 
   return (
-    <nav className="desktop:hidden fixed bottom-0 left-0 right-0 h-16 bg-base-card/95 backdrop-blur-sm border-t border-base-border z-40 flex items-center justify-around px-2 pb-safe">
+    <nav className="desktop:hidden fixed bottom-0 left-0 right-0 h-16 bg-base-card border-t border-base-border z-40 flex items-center justify-around px-2 pb-safe">
       {tabs.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}

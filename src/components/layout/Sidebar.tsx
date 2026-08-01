@@ -6,10 +6,8 @@ interface SidebarProps {
   activeAlerts: Alert[];
   isCollapsed: boolean;
   isMobileOpen: boolean;
-  colorThemeLabel: string;
   onCloseMobile: () => void;
   onToggleCollapsed: () => void;
-  onCycleTheme: () => void;
 }
 
 const navItems = [
@@ -23,10 +21,8 @@ export default function Sidebar({
   activeAlerts,
   isCollapsed,
   isMobileOpen,
-  colorThemeLabel,
   onCloseMobile,
   onToggleCollapsed,
-  onCycleTheme,
 }: SidebarProps) {
   const labelClass = isCollapsed ? 'desktop:hidden' : '';
 
@@ -63,14 +59,6 @@ export default function Sidebar({
           </NavLink>
 
           <div className={`ml-auto flex items-center gap-1 ${isCollapsed ? 'desktop:hidden' : ''}`}>
-            <IconButton
-              label={`Toggle theme. Current theme: ${colorThemeLabel}`}
-              title={`Toggle theme: ${colorThemeLabel}`}
-              onClick={onCycleTheme}
-              className="desktop:hidden"
-            >
-              <PaletteIcon />
-            </IconButton>
             <IconButton
               label="Close sidebar"
               title="Close sidebar"
@@ -114,15 +102,6 @@ export default function Sidebar({
         </nav>
 
         <div className={`px-4 pb-4 space-y-3 ${isCollapsed ? 'desktop:px-2' : ''}`}>
-          <IconButton
-            label={`Toggle theme. Current theme: ${colorThemeLabel}`}
-            title={`Toggle theme: ${colorThemeLabel}`}
-            onClick={onCycleTheme}
-            className={`hidden desktop:flex ${isCollapsed ? 'desktop:mx-auto' : 'desktop:w-full desktop:justify-start desktop:px-4'}`}
-          >
-            <PaletteIcon />
-            <span className={labelClass}>Theme</span>
-          </IconButton>
 
           <div className={isCollapsed ? 'desktop:hidden' : ''}>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3 px-1">
@@ -188,17 +167,6 @@ function IconButton({
     >
       {children}
     </button>
-  );
-}
-
-function PaletteIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="13.5" cy="6.5" r="1.2" fill="var(--color-accent-amber)" stroke="none" />
-      <circle cx="17.5" cy="10.5" r="1.2" fill="var(--color-accent-coral)" stroke="none" />
-      <circle cx="8" cy="9" r="1.2" fill="var(--color-accent-rose)" stroke="none" />
-      <path d="M12 3a9 9 0 0 0 0 18h1.4a2 2 0 0 0 1.5-3.3 1.4 1.4 0 0 1 1.1-2.3H18a3 3 0 0 0 3-3A9 9 0 0 0 12 3Z" />
-    </svg>
   );
 }
 

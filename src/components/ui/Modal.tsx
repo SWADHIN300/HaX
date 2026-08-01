@@ -52,7 +52,7 @@ export default function Modal({
       >
         {/* Header */}
         {(title || fullScreenMobile) && (
-          <div className="sticky top-0 bg-base-card/95 backdrop-blur-sm border-b border-base-border px-4 desktop:px-6 py-4 flex items-center justify-between z-10">
+          <div className="sticky top-0 bg-base-card border-b border-base-border px-4 desktop:px-6 py-4 flex items-center justify-between z-10">
             <h2 className="text-lg font-semibold text-text-primary tracking-tight">
               {title}
             </h2>

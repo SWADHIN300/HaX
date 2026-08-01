@@ -20,7 +20,7 @@ export default function AppFooter() {
           title="GitHub: SWADHIN300/HaX"
         >
           <GitHubIcon />
-          <span>SWADHIN300/HaX</span>
+        
         </a>
       </div>
     </footer>

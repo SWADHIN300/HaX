@@ -6,45 +6,25 @@
 
 :root {
   color-scheme: dark;
-  --color-base-rgb: 15 23 42;
-  --color-base-card-rgb: 30 41 59;
-  --color-base-border-rgb: 51 65 85;
-  --color-base-border-light-rgb: 71 85 105;
-  --color-text-primary-rgb: 248 250 252;
-  --color-text-secondary-rgb: 148 163 184;
-  --color-text-muted-rgb: 100 116 139;
-  --color-accent-amber: #A855F7;
-  --color-accent-amber-rgb: 168 85 247;
-  --color-accent-coral: #6366F1;
-  --color-accent-coral-rgb: 99 102 241;
-  --color-accent-rose: #3B82F6;
-  --color-accent-rose-rgb: 59 130 246;
-  --color-accent-sage: #06B6D4;
-  --color-accent-sage-rgb: 6 182 212;
-  --color-accent-glow: rgba(99, 102, 241, 0.25);
-  --color-accent-soft: rgba(168, 85, 247, 0.06);
+  --color-base-rgb: 11 13 16;
+  --color-base-card-rgb: 20 23 28;
+  --color-base-border-rgb: 35 40 48;
+  --color-base-border-light-rgb: 46 52 64;
+  --color-text-primary-rgb: 240 240 240;
+  --color-text-secondary-rgb: 139 146 154;
+  --color-text-muted-rgb: 85 93 104;
+  --color-accent-amber: #F5A623;
+  --color-accent-amber-rgb: 245 166 35;
+  --color-accent-coral: #E8615A;
+  --color-accent-coral-rgb: 232 97 90;
+  --color-accent-rose: #C4477A;
+  --color-accent-rose-rgb: 196 71 122;
+  --color-accent-sage: #5EC9A8;
+  --color-accent-sage-rgb: 94 201 168;
+  --color-accent-glow: rgba(232, 97, 90, 0.25);
+  --color-accent-soft: rgba(245, 166, 35, 0.06);
 }
 
-:root[data-color-theme='white'] {
-  color-scheme: light;
-  --color-base-rgb: 247 248 251;
-  --color-base-card-rgb: 255 255 255;
-  --color-base-border-rgb: 221 226 234;
-  --color-base-border-light-rgb: 199 207 219;
-  --color-text-primary-rgb: 17 24 39;
-  --color-text-secondary-rgb: 75 85 99;
-  --color-text-muted-rgb: 107 114 128;
-  --color-accent-amber: #D97706;
-  --color-accent-amber-rgb: 217 119 6;
-  --color-accent-coral: #DC2626;
-  --color-accent-coral-rgb: 220 38 38;
-  --color-accent-rose: #BE185D;
-  --color-accent-rose-rgb: 190 24 93;
-  --color-accent-sage: #059669;
-  --color-accent-sage-rgb: 5 150 105;
-  --color-accent-glow: rgba(217, 119, 6, 0.18);
-  --color-accent-soft: rgba(217, 119, 6, 0.08);
-}
 @layer base {
   * {
     margin: 0;
@@ -176,7 +156,7 @@
   .card {
     background: rgb(var(--color-base-card-rgb));
     border: 1px solid rgb(var(--color-base-border-rgb));
-    border-radius: 12px;
+    border-radius: 8px;
     transition: all 0.25s ease;
   }
   .card:hover {

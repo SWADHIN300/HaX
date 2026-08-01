@@ -68,7 +68,7 @@ export default function HackathonCard({
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-base-card via-transparent to-black/10" />
-        <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 backdrop-blur-sm px-2.5 py-1">
+        <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1">
           <div
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: sourceColors[hackathon.source] || '#555' }}

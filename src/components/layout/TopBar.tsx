@@ -2,19 +2,15 @@ import { NavLink } from 'react-router-dom';
 
 interface TopBarProps {
   unreadCount: number;
-  colorThemeLabel: string;
   onMenuClick: () => void;
-  onCycleTheme: () => void;
 }
 
 export default function TopBar({
   unreadCount,
-  colorThemeLabel,
   onMenuClick,
-  onCycleTheme,
 }: TopBarProps) {
   return (
-    <header className="desktop:hidden fixed top-0 left-0 right-0 h-14 bg-base-card/95 backdrop-blur-sm border-b border-base-border z-40 flex items-center justify-between px-3">
+    <header className="desktop:hidden fixed top-0 left-0 right-0 h-14 bg-base-card border-b border-base-border z-40 flex items-center justify-between px-3">
       <button
         type="button"
         className="tap-target flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
@@ -39,15 +35,6 @@ export default function TopBar({
       </NavLink>
 
       <div className="flex items-center gap-1">
-        <button
-          type="button"
-          className="tap-target flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
-          onClick={onCycleTheme}
-          aria-label={`Toggle theme. Current theme: ${colorThemeLabel}`}
-          title={`Toggle theme: ${colorThemeLabel}`}
-        >
-          <PaletteIcon />
-        </button>
 
         <button
           type="button"
@@ -73,17 +60,6 @@ function MenuIcon() {
       <path d="M4 6h16" />
       <path d="M4 12h16" />
       <path d="M4 18h16" />
-    </svg>
-  );
-}
-
-function PaletteIcon() {
-  return (
-    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="13.5" cy="6.5" r="1.2" fill="var(--color-accent-amber)" stroke="none" />
-      <circle cx="17.5" cy="10.5" r="1.2" fill="var(--color-accent-coral)" stroke="none" />
-      <circle cx="8" cy="9" r="1.2" fill="var(--color-accent-rose)" stroke="none" />
-      <path d="M12 3a9 9 0 0 0 0 18h1.4a2 2 0 0 0 1.5-3.3 1.4 1.4 0 0 1 1.1-2.3H18a3 3 0 0 0 3-3A9 9 0 0 0 12 3Z" />
     </svg>
   );
 }
