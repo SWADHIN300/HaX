@@ -72,6 +72,10 @@ npm run pipeline
 
 The pipeline runs automatically at **8:00 AM IST daily** via GitHub Actions.
 
+> **Note:** The workflow file lives at the **repo root** (`.github/workflows/daily-scrape.yml`),
+> not inside `hackatlas-backend/`. GitHub only recognizes workflows at the repository root.
+> All steps use `working-directory: hackatlas-backend/` to run in the correct folder.
+
 ### Add Secrets
 
 Go to your repo → **Settings → Secrets and variables → Actions** → **New repository secret**:
@@ -128,8 +132,6 @@ const ALL_SCRAPERS = [
 
 ```
 hackatlas-backend/
-├── .github/workflows/
-│   └── daily-scrape.yml        # GitHub Actions cron + manual trigger
 ├── src/
 │   ├── scrapers/
 │   │   ├── base.ts             # Abstract Scraper class + sleep utility

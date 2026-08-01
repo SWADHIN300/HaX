@@ -1,6 +1,19 @@
 // ═══════════════════════════════════════════════════════════
 // HackAtlas — Database Client (Supabase Wrapper)
 // ═══════════════════════════════════════════════════════════
+//
+// SECURITY: This client uses the SERVICE ROLE key (SUPABASE_SERVICE_KEY),
+// which has FULL read/write access and BYPASSES Row Level Security (RLS).
+// It is intended ONLY for server-side use in the scraper pipeline
+// (running via GitHub Actions or locally during development).
+//
+// The FRONTEND uses a separate ANON (public) key, which is restricted
+// by RLS policies to read-only access on the `hackathons` table.
+// See: src/lib/supabaseClient.ts in the frontend project.
+//
+// ⚠️  NEVER expose SUPABASE_SERVICE_KEY in the frontend bundle,
+//     client-side code, or any publicly accessible location.
+// ═══════════════════════════════════════════════════════════
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Alert, Hackathon } from "../types/hackathon.js";

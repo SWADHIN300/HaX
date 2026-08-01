@@ -4,7 +4,7 @@ on:
   schedule:
     # 8:00 AM IST = 2:30 UTC
     - cron: "30 2 * * *"
-  workflow_dispatch: # allow manual runs
+  workflow_dispatch: # Manual trigger via GitHub UI
 
 env:
   NODE_ENV: production
@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    defaults:
+      run:
+        working-directory: hackatlas-backend
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,9 +27,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: cache-deps
+        with:
+          path: hackatlas-backend/node_modules
+          key: ${{ runner.os }}-backend-deps-${{ hashFiles('hackatlas-backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-deps-
 
       - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Install Playwright Chromium
@@ -43,6 +56,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: pipeline-failure-log
-          path: pipeline-output.log
+          name: pipeline-failure-log-${{ github.run_id }}
+          path: hackatlas-backend/pipeline-output.log
           retention-days: 7
