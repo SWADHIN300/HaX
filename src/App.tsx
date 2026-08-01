@@ -7,10 +7,8 @@ import SettingsScreen from './screens/SettingsScreen';
 import { useHackathons } from './hooks/useHackathons';
 import { useBookmarks } from './hooks/useBookmarks';
 import { useAlerts } from './hooks/useAlerts';
-import { useTheme } from './hooks/useTheme';
 
 export default function App() {
-  const { theme, toggleTheme } = useTheme();
   const {
     hackathons,
     trendingIndia,
@@ -101,7 +99,7 @@ export default function App() {
               />
             }
           />
-          <Route path="settings" element={<SettingsScreen theme={theme} toggleTheme={toggleTheme} />} />
+          <Route path="settings" element={<SettingsScreen />} />
         </Route>
       </Routes>
     </BrowserRouter>

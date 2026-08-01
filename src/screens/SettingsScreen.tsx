@@ -1,19 +1,102 @@
-import { useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import ToggleSwitch from '../components/ui/ToggleSwitch';
 
-interface SettingsScreenProps {
-  theme: 'dark' | 'white';
-  toggleTheme: () => void;
+interface Profile {
+  name: string;
+  email: string;
 }
 
-export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenProps) {
-  const [pushEnabled, setPushEnabled] = useState(true);
-  const [emailEnabled, setEmailEnabled] = useState(false);
-  const [weeklyDigest, setWeeklyDigest] = useState(true);
+const DEFAULT_PROFILE: Profile = {
+  name: 'Swadhin',
+  email: 'swadhin@example.com',
+};
+
+function readBoolean(key: string, fallback: boolean) {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored === null ? fallback : stored === 'true';
+  } catch {
+    return fallback;
+  }
+}
+
+function readProfile(): Profile {
+  try {
+    const stored = localStorage.getItem('hax-profile');
+    if (!stored) return DEFAULT_PROFILE;
+    const parsed = JSON.parse(stored) as Partial<Profile>;
+    return {
+      name: parsed.name?.trim() || DEFAULT_PROFILE.name,
+      email: parsed.email?.trim() || DEFAULT_PROFILE.email,
+    };
+  } catch {
+    return DEFAULT_PROFILE;
+  }
+}
+
+export default function SettingsScreen() {
+  const [pushEnabled, setPushEnabled] = useState(() => readBoolean('hax-push-notifications', true));
+  const [emailEnabled, setEmailEnabled] = useState(() => readBoolean('hax-email-notifications', false));
+  const [weeklyDigest, setWeeklyDigest] = useState(() => readBoolean('hax-weekly-digest', true));
+  const [profile, setProfile] = useState<Profile>(readProfile);
+  const [draftProfile, setDraftProfile] = useState<Profile>(profile);
+  const [isEditing, setIsEditing] = useState(false);
+  const [feedback, setFeedback] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('hax-push-notifications', String(pushEnabled));
+  }, [pushEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem('hax-email-notifications', String(emailEnabled));
+  }, [emailEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem('hax-weekly-digest', String(weeklyDigest));
+  }, [weeklyDigest]);
+
+  useEffect(() => {
+    localStorage.setItem('hax-profile', JSON.stringify(profile));
+  }, [profile]);
+
+  const handleDarkMode = () => {
+    document.documentElement.removeAttribute('data-color-theme');
+    localStorage.setItem('hax-theme', 'dark');
+    setFeedback('Dark mode is active.');
+  };
+
+  const handleEditProfile = () => {
+    setDraftProfile(profile);
+    setIsEditing(true);
+    setFeedback('');
+  };
+
+  const handleSaveProfile = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const name = draftProfile.name.trim();
+    const email = draftProfile.email.trim();
+    if (!name || !email) {
+      setFeedback('Name and email are required.');
+      return;
+    }
+    setProfile({ name, email });
+    setIsEditing(false);
+    setFeedback('Profile saved.');
+  };
+
+  const handleSignOut = () => {
+    setProfile({ name: 'Guest', email: 'Not signed in' });
+    setIsEditing(false);
+    setFeedback('Signed out of this demo account.');
+  };
+
+  const handleSignIn = () => {
+    setProfile(DEFAULT_PROFILE);
+    setFeedback('Signed in as Swadhin.');
+  };
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
       <div className="px-4 desktop:px-6 pt-5 desktop:pt-6 pb-4">
         <h1 className="text-xl desktop:text-2xl font-bold tracking-tighter text-text-primary">
           Settings
@@ -24,7 +107,6 @@ export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenPro
       </div>
 
       <div className="px-4 desktop:px-6 pb-6 space-y-6 desktop:max-w-2xl">
-        {/* Notification Preferences */}
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
             Notifications
@@ -33,7 +115,7 @@ export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenPro
             <div className="p-4">
               <ToggleSwitch
                 enabled={pushEnabled}
-                onToggle={() => setPushEnabled(!pushEnabled)}
+                onToggle={() => setPushEnabled((enabled) => !enabled)}
                 label="Push Notifications"
                 description="Get notified about new hackathons matching your alerts"
               />
@@ -41,7 +123,7 @@ export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenPro
             <div className="p-4">
               <ToggleSwitch
                 enabled={emailEnabled}
-                onToggle={() => setEmailEnabled(!emailEnabled)}
+                onToggle={() => setEmailEnabled((enabled) => !enabled)}
                 label="Email Notifications"
                 description="Receive hackathon updates via email"
               />
@@ -49,7 +131,7 @@ export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenPro
             <div className="p-4">
               <ToggleSwitch
                 enabled={weeklyDigest}
-                onToggle={() => setWeeklyDigest(!weeklyDigest)}
+                onToggle={() => setWeeklyDigest((enabled) => !enabled)}
                 label="Weekly Digest"
                 description="Summary of top hackathons sent every Monday"
               />
@@ -57,98 +139,90 @@ export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenPro
           </div>
         </section>
 
-        {/* Theme */}
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
             Appearance
           </h2>
           <div className="card p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-text-primary">Theme</p>
                 <p className="text-xs text-text-muted mt-0.5">
-                  Toggle between dark and light mode
+                  Dark mode only for v1 - light theme coming soon
                 </p>
               </div>
               <button
-                onClick={toggleTheme}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-base border border-base-border hover:border-accent-amber/50 transition-colors cursor-pointer"
+                type="button"
+                onClick={handleDarkMode}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-base border border-base-border hover:border-accent-amber/50 transition-colors cursor-pointer"
+                aria-label="Use dark theme"
               >
-                {theme === 'dark' ? (
-                  <>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="text-accent-amber"
-                    >
-                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                    </svg>
-                    <span className="text-xs font-medium text-text-primary">
-                      Dark
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-accent-amber"
-                    >
-                      <circle cx="12" cy="12" r="5" />
-                      <line x1="12" y1="1" x2="12" y2="3" />
-                      <line x1="12" y1="21" x2="12" y2="23" />
-                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                      <line x1="1" y1="12" x2="3" y2="12" />
-                      <line x1="21" y1="12" x2="23" y2="12" />
-                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                    </svg>
-                    <span className="text-xs font-medium text-text-primary">
-                      Light
-                    </span>
-                  </>
-                )}
+                <MoonIcon />
+                <span className="text-sm font-medium text-text-primary">Dark</span>
               </button>
             </div>
           </div>
         </section>
 
-        {/* Account */}
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
             Account
           </h2>
           <div className="card p-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-amber to-accent-coral flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-text-primary">
-                  Swadhin
-                </p>
-                <p className="text-xs text-text-muted">swadhin@example.com</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <button className="btn-ghost text-sm flex-1">Edit Profile</button>
-              <button className="btn-ghost text-sm flex-1 !border-accent-coral/30 text-accent-coral hover:!bg-accent-coral/5">
-                Sign Out
-              </button>
-            </div>
+            {isEditing ? (
+              <form onSubmit={handleSaveProfile} className="space-y-3">
+                <label className="block">
+                  <span className="text-xs text-text-secondary">Name</span>
+                  <input
+                    value={draftProfile.name}
+                    onChange={(event) => setDraftProfile((draft) => ({ ...draft, name: event.target.value }))}
+                    className="mt-1 w-full rounded-md border border-base-border bg-base px-3 py-2 text-sm text-text-primary focus:border-accent-amber/60 outline-none"
+                    autoFocus
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs text-text-secondary">Email</span>
+                  <input
+                    type="email"
+                    value={draftProfile.email}
+                    onChange={(event) => setDraftProfile((draft) => ({ ...draft, email: event.target.value }))}
+                    className="mt-1 w-full rounded-md border border-base-border bg-base px-3 py-2 text-sm text-text-primary focus:border-accent-amber/60 outline-none"
+                  />
+                </label>
+                <div className="flex gap-3">
+                  <button type="submit" className="btn-gradient text-sm flex-1">Save Profile</button>
+                  <button type="button" onClick={() => setIsEditing(false)} className="btn-ghost text-sm flex-1">Cancel</button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-amber to-accent-coral flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">{profile.name.charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">{profile.name}</p>
+                    <p className="text-xs text-text-muted">{profile.email}</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  {profile.email === 'Not signed in' ? (
+                    <button type="button" onClick={handleSignIn} className="btn-gradient text-sm flex-1">Sign In</button>
+                  ) : (
+                    <button type="button" onClick={handleEditProfile} className="btn-ghost text-sm flex-1">Edit Profile</button>
+                  )}
+                  {profile.email !== 'Not signed in' && (
+                    <button type="button" onClick={handleSignOut} className="btn-ghost text-sm flex-1 !border-accent-coral/30 text-accent-coral hover:!bg-accent-coral/5">
+                      Sign Out
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+            {feedback && <p className="text-xs text-accent-sage" role="status">{feedback}</p>}
           </div>
         </section>
 
-        {/* About */}
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">
             About
@@ -158,18 +232,23 @@ export default function SettingsScreen({ theme, toggleTheme }: SettingsScreenPro
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-accent-amber via-accent-coral to-accent-rose flex items-center justify-center">
                 <span className="text-white font-bold text-[10px]">H</span>
               </div>
-              <span className="text-sm font-bold tracking-tight text-text-primary">
-                HaX
-              </span>
+              <span className="text-sm font-bold tracking-tight text-text-primary">HaX</span>
               <span className="text-xs text-text-muted">v1.0.0</span>
             </div>
             <p className="text-xs text-text-muted leading-relaxed">
-              Your personal hackathon discovery and alert dashboard. Stay ahead 
-              of the best hackathons across AI, Web3, Fintech, and more.
+              Your personal hackathon discovery and alert dashboard. Stay ahead of the best hackathons across AI, Web3, Fintech, and more.
             </p>
           </div>
         </section>
       </div>
     </div>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-accent-amber" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
   );
 }
