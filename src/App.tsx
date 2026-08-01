@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import FeedScreen from './screens/FeedScreen';
@@ -9,6 +10,11 @@ import { useBookmarks } from './hooks/useBookmarks';
 import { useAlerts } from './hooks/useAlerts';
 
 export default function App() {
+  useEffect(() => {
+    localStorage.setItem('hax-theme', 'dark');
+    document.documentElement.removeAttribute('data-color-theme');
+  }, []);
+
   const {
     hackathons,
     trendingIndia,
